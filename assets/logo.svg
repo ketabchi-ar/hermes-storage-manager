@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="logoBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b1120" />
+      <stop offset="100%" stop-color="#020617" />
+    </linearGradient>
+    <linearGradient id="boltGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#818cf8" />
+    </linearGradient>
+    <filter id="glowLogo" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#38bdf8" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <!-- Container -->
+  <rect width="256" height="256" rx="56" fill="url(#logoBg)" stroke="#1e293b" stroke-width="4"/>
+  <rect x="12" y="12" width="232" height="232" rx="46" fill="none" stroke="#38bdf8" stroke-width="1.5" stroke-opacity="0.3"/>
+
+  <!-- Energy Wave Ring -->
+  <circle cx="128" cy="128" r="76" fill="none" stroke="#334155" stroke-width="2" stroke-dasharray="8 6"/>
+
+  <!-- Lightning Bolt Storage Icon -->
+  <g filter="url(#glowLogo)">
+    <path d="M136 44 L168 44 L116 120 L156 120 L96 216 L118 136 L86 136 Z" fill="url(#boltGrad)" />
+  </g>
+</svg>
