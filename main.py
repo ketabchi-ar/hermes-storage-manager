@@ -405,6 +405,7 @@ HTML_PAGE = """<!DOCTYPE html>
         thDate: "آخرین تغییر",
         thAction: "عملیات",
         btnDelete: "حذف سشن",
+        btnOpenChat: "مشاهده در WebUI",
         confirmDelete: "آیا از حذف این سشن مطمئن هستید؟ فایل‌های ضمیمه آن نیز پاک خواهند شد.",
         emptySessions: "هیچ سشنی با این فیلتر حجم یافت نشد.",
       },
@@ -428,6 +429,7 @@ HTML_PAGE = """<!DOCTYPE html>
         thDate: "Last Modified",
         thAction: "Action",
         btnDelete: "Delete",
+        btnOpenChat: "Open in WebUI",
         confirmDelete: "Are you sure you want to delete this session? Attached assets will be deleted too.",
         emptySessions: "No sessions matched the current size filter.",
       }
@@ -494,7 +496,10 @@ HTML_PAGE = """<!DOCTYPE html>
               <td class="py-2.5 px-3 max-w-md truncate text-slate-300" title="${s.first_prompt}">${s.first_prompt}</td>
               <td class="py-2.5 px-3 text-center ${sizeColor}">${s.size_human}</td>
               <td class="py-2.5 px-3 text-center text-slate-400 font-mono text-[11px]">${s.modified_iso}</td>
-              <td class="py-2.5 px-3 text-center">
+              <td class="py-2.5 px-3 text-center flex items-center justify-center gap-1.5">
+                <a href="http://127.0.0.1:8787/?session=${s.id}" target="_blank" class="px-2.5 py-1 rounded-lg bg-sky-500/10 hover:bg-sky-500/20 text-sky-300 border border-sky-500/30 text-[11px] transition-colors flex items-center gap-1">
+                  ↗️ <span>${dict.btnOpenChat || 'باز کردن'}</span>
+                </a>
                 <button onclick="deleteSession('${s.id}')" class="px-2.5 py-1 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 text-[11px] transition-colors">
                   🗑️ ${dict.btnDelete}
                 </button>
