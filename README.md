@@ -1,98 +1,110 @@
+# Hermes Storage Optimizer ⚡
+
 <p align="center">
-  <img src="assets/banner.svg" alt="Hermes Storage Optimizer Banner" width="100%" />
+  <img src="assets/banner.svg" alt="بنر بهینه‌ساز حافظه هرمس" width="100%" />
 </p>
 
 <div align="center">
 
-[![DevSponsors](https://img.shields.io/badge/DevSponsors-Verified_OSS-6366f1?style=for-the-badge&logo=github)](https://devsponsors.github.io)
-[![Sponsor](https://img.shields.io/badge/Sponsor-DevSponsors_Hub-emerald?style=for-the-badge&logo=github-sponsors)](https://devsponsors.github.io)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![DevSponsors Official](https://devsponsors.github.io/assets/badges/sponsor.svg)](https://devsponsors.github.io)
+[![DevSponsors Member](https://devsponsors.github.io/assets/badges/member.svg)](https://devsponsors.github.io)
+[![DevSponsors Cloud](https://devsponsors.github.io/assets/badges/cloud.svg)](https://devsponsors.github.io/mediakit.html)
 
-**English** • [راهنمای فارسی (Persian)](README.fa.md)
+<br>
+
+[![DevSponsors Verified](https://img.shields.io/badge/DevSponsors-Verified_OSS-6366f1?style=for-the-badge&logo=github)](https://devsponsors.github.io)
+[![DevSponsors Sponsor](https://img.shields.io/badge/Sponsor-DevSponsors_Hub-emerald?style=for-the-badge&logo=github-sponsors)](https://devsponsors.github.io)
+[![DevSponsors Cloud](https://img.shields.io/badge/Infrastructure-DevSponsors_Cloud-ec4899?style=for-the-badge&logo=server)](https://devsponsors.github.io/mediakit.html)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
+
+<br>
+
+**راهنمای فارسی** • [English Documentation](README.en.md)
 
 </div>
 
-> ⚡ **Hermes Storage Optimizer**: Lightweight, zero-dependency storage cleaner, session analyzer, and interactive local Web Wizard for **Hermes Agent**.
+> ⚡ **Hermes Storage Optimizer**: ابزار سبک، ماژولار و بدون وابستگی (Zero-Dependency) برای پاکسازی، مدیریت نشست‌ها و بهینه‌سازی دیسک ایجنت **Hermes Agent** همراه با رابط کاربری تحت وب (Web Wizard).
 
 ---
 
-## 🌟 Why Hermes Storage Optimizer?
+## 🌟 چرا به Hermes Storage Optimizer نیاز دارید؟
 
-Continuous workflows with autonomous AI agents like Hermes generate large volumes of chat logs, media uploads, and SQLite database writes under `~/.hermes`. Over time, this leads to:
-1. **Slow WebUI Loading:** Loading dozens of multi-megabyte (or gigabyte) session files causes noticeable UI latency.
-2. **Context Bloat & Token Waste:** Runaway sessions send oversized conversation histories back to LLM providers, driving up token costs and slowing generation speed.
-3. **Wasted Disk Space:** Forgotten logs (`webui.log`), un-vacuumed SQLite databases, and orphaned image assets consume unnecessary gigabytes.
+کار مداوم با ایجنت‌های هوش مصنوعی مستقل مانند Hermes Agent، حجم عظیمی از داده‌های متنی، لاگ‌ها و فایل‌های رسانه‌ای را در مسیر `~/.hermes` تولید و ذخیره می‌کند. در طول زمان، این اتفاق منجر به مشکلات زیر می‌شود:
 
-**Hermes Storage Optimizer** provides complete visibility and safe, 1-click remediation with zero external dependencies.
+1. **افت شدید سرعت بارگذاری WebUI:** خواندن ده‌ها فایل حجیم چند ده مگابایتی یا گیگابایتی سشن‌ها هنگام اجرای پنل وب لوکال باعث کندی شدید می‌شود.
+2. **اتلاف توکن و افزایش زمان پردازش (Context Bloat):** سشن‌های بیش از حد طولانی کانتکست عظیمی را به مدل‌های زبانی ارسال می‌کنند که هزینه توکن را بالا برده و پاسخ‌دهی را کند می‌کند.
+3. **اشغال بیهوده دیسک:** فایل‌های سرریز لاگ (`webui.log`)، فایل‌های صوتی موقت ویسپر در کش و دیتابیس بدون دیفرگمنت SQLite تا چندین گیگابایت حافظه سیستم را پر می‌کنند.
+
+**Hermes Storage Optimizer** یک راه‌حل مستقل، کاملاً محلی و بدون نیاز به نصب حتی یک پکیج خارجی است که وضعیت حافظه را شفاف کرده و امکان بهینه‌سازی امن و سریع را فراهم می‌سازد.
 
 ---
 
-## 📸 Web Dashboard Preview
+## 📸 نمای داشبورد وب (Web Wizard)
 
 <div align="center">
-  <img src="assets/dashboard-fa.png" alt="Hermes Storage Optimizer Dashboard" width="100%" style="border-radius: 12px; border: 1px solid #1e293b;" />
+  <img src="assets/dashboard-fa.png" alt="داشبورد وب مدیریت حافظه هرمس" width="100%" style="border-radius: 14px; border: 1px solid #1e293b; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.5);" />
 </div>
 
 ---
 
-## 🛡️ Key Features
+## 🛡️ قابلیت‌های کلیدی
 
-### 1. 📊 Visual Storage Distribution
-Real-time, color-coded visual breakdown of disk consumption across chat sessions, python virtualenv (`hermes-agent`), SQLite database, logs, caches, and media attachments.
+### ۱. 📊 نمودار بصری توزیع فضای دیسک
+نمایش زنده و تفکیک‌شده سهم هر بخش شامل سشن‌های گفتگو، محیط مجازی پایتون (`hermes-agent`)، دیتابیس وضعیت (`state.db`)، فایل‌های لاگ، کش و فایل‌های ضمیمه.
 
-### 2. 🛠️ Safe Maintenance Suite (Zero Chat Loss)
-Each action displays exact reclaimable disk space alongside an informative **ⓘ** tooltip:
-- **🧹 Safe Log Truncation:** Zeroes bloated log files (`webui.log`, `logs/*.log`) without crashing running gateway or WebUI processes.
-- **🗑️ Cache Cleaner:** Purges transient voice files (Whisper transcripts) and temporary model buffers.
-- **🗜️ SQLite Defragmentation (VACUUM):** Runs `VACUUM` on `state.db` to reclaim fragmented free pages back to the filesystem.
-- **📁 Orphaned Attachments Cleaner:** Scans `webui/attachments` and eliminates leftover media directories whose parent chat sessions were previously deleted.
+### ۲. 🛠️ بسته اقدامات نگهداری امن (بدون از دست رفتن چت‌ها)
+روی هر یک از دکمه‌ها حجم دقیق قابل آزادسازی به همراه یک آیکون راهنما (**ⓘ**) قرار گرفته است:
+* **🧹 تخلیه لاگ‌های حجیم:** سبک کردن فایل‌های `webui.log` و `logs/*.log` و رساندن حجم آن‌ها به صفر بایت بدون اختلال در عملکرد سرور.
+* **🗑️ پاکسازی کش موقت:** خالی کردن فایل‌های موقت صوتی (Whisper) و بافرهای موقت بدون دست‌زدن به تنظیمات یا سشن‌ها.
+* **🗜️ فشرده‌سازی دیتابیس (Vacuum):** اجرای دستور استاندارد SQLite VACUUM روی `state.db` جهت بازگرداندن صفحات خالی دیتابیس به فایل‌سیستم سیستم‌عامل.
+* **📁 حذف ضمیمه‌های یتیم (Orphaned Assets):** شناسایی و پاکسازی پوشه‌های مدیا در `webui/attachments` که سشن مربوطه‌شان قبلاً حذف شده است.
 
-### 3. 💬 Heavy Session Manager & Token Analytics
-- **Size Filtering:** Instant filtering for sessions over 5 MB, 20 MB, or 100+ MB.
-- **Conversation Metrics:** Displays user prompt count vs. AI assistant response count.
-- **Token Estimation:** Intelligent context token usage estimate (`~k tokens`) to pinpoint costly sessions.
-- **Bilingual & Persian Jalali Dates:** Full solar Hijri (Jalali) date formatting in Persian mode, standard ISO dates in English mode.
-- **1-Click WebUI Deep-Link:** Direct button (`↗️`) to inspect the actual conversation in Hermes WebUI before deletion.
-- **1-Click Backup Export:** Download complete standalone `.zip` archives containing the session JSON and all associated attachments.
+### ۳. 💬 مدیریت سشن‌های سنگین و تحلیل توکن
+* **فیلتر سشن‌ها:** فیلتر فوری سشن‌ها بر اساس حجم (۵ مگابایت، ۲۰ مگابایت و ۱۰۰+ مگابایت).
+* **شمارشگر پیام‌ها:** تفکیک دقیق تعداد پیام‌های کاربر و پاسخ‌های هوش مصنوعی.
+* **تخمین توکن:** برآورد هوشمند میزان کانتکست اشغال‌شده توسط هر چت (`~k tokens`).
+* **تاریخ‌های شمسی:** نمایش تاریخ و زمان آخرین ویرایش سشن‌ها با تقویم هجری خورشیدی در محیط فارسی.
+* **مشاهده مستقیم در WebUI:** دکمه `↗️` جهت باز کردن مستقیم همان چت در پنل وب هرمس قبل از حذف.
+* **پشتیبان‌گیری زیپ (ZIP):** امکان دانلود سشن به همراه تمام تصاویر و فایل‌های ضمیمه‌اش در یک فایل زیپ قبل از حذف نهایی.
 
 ---
 
-## ⚡ Quick Start
+## ⚡ نحوه اجرا و استفاده
 
-### Option 1: Web Wizard (Recommended)
-Zero installation required. Simply launch:
+### روش اول: اجرای ویزارد وب (پیشنهادی)
+بدون نیاز به نصب هیچ‌گونه پیش‌نیازی، دستور زیر را در ترمینال اجرا کنید:
 ```bash
 python3 main.py --ui
 ```
-Your browser will automatically open `http://127.0.0.1:9123`.
+صفحه ویزارد به طور خودکار در مرورگر شما در آدرس `http://127.0.0.1:9123` باز می‌شود.
 
-### Option 2: CLI Inspection
+### روش دوم: بررسی سریع در خط فرمان (CLI)
 ```bash
 python3 main.py
 ```
 
-### Option 3: Direct Automated Cleaning
+### روش سوم: پاکسازی مستقیم و خودکار
 ```bash
-# Truncate logs
+# تخلیه لاگ‌های حجیم
 python3 main.py --clean-logs
 
-# Purge cache
+# پاکسازی کش‌های موقت
 python3 main.py --clean-cache
 
-# Vacuum SQLite DB
+# فشرده‌سازی دیتابیس SQLite
 python3 main.py --vacuum
 
-# Clean orphaned attachments
+# حذف ضمیمه‌های یتیم
 python3 main.py --clean-orphaned
 ```
 
 ---
 
-## 🔒 Security & Privacy
-- **100% Offline & Local:** No analytics, no outbound network requests.
-- **Zero Token/Credential Leakage:** Never reads or logs API keys, tokens, or configuration secrets.
+## 🔒 امنیت و حریم خصوصی
+* **۱۰۰٪ آفلاین و محلی:** ابزار هیچ‌گونه اطلاعاتی به سرورهای خارجی ارسال نمی‌کند.
+* **عدم نشت کلیدها و اسرار:** کلیدهای API، فایل‌های کانفیگ و توکن‌های ورود هرگز خوانده یا پردازش نمی‌شوند.
 
 ---
 
-## License
-Open-sourced under the **MIT License**.
+## لایسنس
+توسعه‌یافته تحت لایسنس متن‌باز **MIT License**.
