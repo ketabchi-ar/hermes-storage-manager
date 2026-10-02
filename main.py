@@ -32,6 +32,35 @@ def get_hermes_dir() -> Path:
     return Path.home() / ".hermes"
 
 
+
+def gregorian_to_jalali(gy: int, gm: int, gd: int) -> tuple[int, int, int]:
+    g_d_m = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334]
+    if gm > 2:
+        gy2 = gy
+    else:
+        gy2 = gy - 1
+    days = 355666 + (365 * gy) + ((gy2 + 3) // 4) - ((gy2 + 99) // 100) + ((gy2 + 399) // 400) + gd + g_d_m[gm - 1]
+    jy = -1595 + (33 * (days // 12053))
+    days %= 12053
+    jy += 4 * (days // 1461)
+    days %= 1461
+    if days > 365:
+        jy += (days - 1) // 365
+        days = (days - 1) % 365
+    if days < 186:
+        jm = 1 + (days // 31)
+        jd = 1 + (days % 31)
+    else:
+        jm = 7 + ((days - 186) // 30)
+        jd = 1 + ((days - 186) % 30)
+    return jy, jm, jd
+
+
+def format_jalali_date(ts: float) -> str:
+    lt = time.localtime(ts)
+    jy, jm, jd = gregorian_to_jalali(lt.tm_year, lt.tm_mon, lt.tm_mday)
+    return f"{jy:04d}/{jm:02d}/{jd:02d} {lt.tm_hour:02d}:{lt.tm_min:02d}"
+
 def format_bytes(size: int) -> str:
     for unit in ["B", "KB", "MB", "GB", "TB"]:
         if abs(size) < 1024.0:
@@ -69,6 +98,7 @@ class SessionItem:
     size_human: str
     modified_time: float
     modified_iso: str
+    modified_jalali: str
     message_count: int
     user_messages: int
     assistant_messages: int
@@ -207,7 +237,8 @@ class HermesAnalyzer:
                         size_bytes=st.st_size,
                         size_human=format_bytes(st.st_size),
                         modified_time=st.st_mtime,
-                        modified_iso=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(st.st_mtime)),
+                        modified_iso=time.strftime("%Y-%m-%d %H:%M", time.localtime(st.st_mtime)),
+                        modified_jalali=format_jalali_date(st.st_mtime),
                         message_count=msg_count,
                         user_messages=user_msgs,
                         assistant_messages=asst_msgs,
@@ -421,9 +452,10 @@ HTML_PAGE = """<!DOCTYPE html>
       <div class="flex flex-wrap gap-2.5 pt-1">
         
         <!-- Clean Logs Button with Info Icon -->
-        <div class="flex items-center rounded-xl bg-slate-800 border border-slate-700 p-0.5">
+        <div class="flex items-center rounded-xl bg-slate-800 border border-slate-700 p-0.5 shadow-sm">
           <button onclick="cleanLogs()" class="px-3 py-1.5 hover:bg-slate-700/80 rounded-lg text-xs text-slate-200 transition-colors flex items-center gap-1.5">
             <span>🧹</span> <span id="btnCleanLogs">تخلیه لاگ‌های حجیم</span>
+            <span id="badgeLogsSize" class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30">--</span>
           </button>
           <button onclick="showInfo('infoLogs')" class="px-2 py-1 text-slate-400 hover:text-sky-300 font-serif italic font-bold text-xs" title="توضیحات">
             ⓘ
@@ -431,9 +463,10 @@ HTML_PAGE = """<!DOCTYPE html>
         </div>
 
         <!-- Clean Cache Button with Info Icon -->
-        <div class="flex items-center rounded-xl bg-slate-800 border border-slate-700 p-0.5">
+        <div class="flex items-center rounded-xl bg-slate-800 border border-slate-700 p-0.5 shadow-sm">
           <button onclick="cleanCache()" class="px-3 py-1.5 hover:bg-slate-700/80 rounded-lg text-xs text-slate-200 transition-colors flex items-center gap-1.5">
             <span>🗑️</span> <span id="btnCleanCache">پاکسازی کش موقت</span>
+            <span id="badgeCacheSize" class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">--</span>
           </button>
           <button onclick="showInfo('infoCache')" class="px-2 py-1 text-slate-400 hover:text-sky-300 font-serif italic font-bold text-xs" title="توضیحات">
             ⓘ
@@ -441,9 +474,10 @@ HTML_PAGE = """<!DOCTYPE html>
         </div>
 
         <!-- Vacuum DB Button with Info Icon -->
-        <div class="flex items-center rounded-xl bg-slate-800 border border-slate-700 p-0.5">
+        <div class="flex items-center rounded-xl bg-slate-800 border border-slate-700 p-0.5 shadow-sm">
           <button onclick="vacuumDb()" class="px-3 py-1.5 hover:bg-slate-700/80 rounded-lg text-xs text-slate-200 transition-colors flex items-center gap-1.5">
             <span>🗜️</span> <span id="btnVacuum">فشرده‌سازی دیتابیس (Vacuum)</span>
+            <span id="badgeDbSize" class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">--</span>
           </button>
           <button onclick="showInfo('infoVacuum')" class="px-2 py-1 text-slate-400 hover:text-sky-300 font-serif italic font-bold text-xs" title="توضیحات">
             ⓘ
@@ -451,9 +485,10 @@ HTML_PAGE = """<!DOCTYPE html>
         </div>
 
         <!-- Clean Orphaned Attachments Button with Info Icon -->
-        <div class="flex items-center rounded-xl bg-slate-800 border border-slate-700 p-0.5">
+        <div class="flex items-center rounded-xl bg-slate-800 border border-slate-700 p-0.5 shadow-sm">
           <button onclick="cleanOrphaned()" class="px-3 py-1.5 hover:bg-slate-700/80 rounded-lg text-xs text-slate-200 transition-colors flex items-center gap-1.5">
             <span>📁</span> <span id="btnCleanOrphaned">حذف ضمیمه‌های یتیم</span>
+            <span id="badgeOrphanedSize" class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">--</span>
           </button>
           <button onclick="showInfo('infoOrphaned')" class="px-2 py-1 text-slate-400 hover:text-sky-300 font-serif italic font-bold text-xs" title="توضیحات">
             ⓘ
@@ -692,6 +727,11 @@ HTML_PAGE = """<!DOCTYPE html>
         document.getElementById('statCache').textContent = data.cache_human;
         document.getElementById('statDb').textContent = data.state_db_human;
 
+        document.getElementById('badgeLogsSize').textContent = '~' + data.logs_human;
+        document.getElementById('badgeCacheSize').textContent = '~' + data.cache_human;
+        document.getElementById('badgeDbSize').textContent = '~' + data.state_db_human;
+        document.getElementById('badgeOrphanedSize').textContent = data.orphaned_attachments_human;
+
         renderDistribution(data);
       } catch (err) {
         console.error(err);
@@ -723,12 +763,16 @@ HTML_PAGE = """<!DOCTYPE html>
             <tr class="hover:bg-slate-800/40 transition-colors">
               <td class="py-2.5 px-3 font-mono text-sky-400 font-semibold">${s.id}</td>
               <td class="py-2.5 px-3 max-w-sm truncate text-slate-300" title="${s.first_prompt}">
-                <div class="truncate">${s.first_prompt}</div>
-                <div class="text-[10px] text-slate-500 mt-0.5">${s.user_messages} کاربر • ${s.assistant_messages} مدل</div>
+                <div class="truncate font-medium">${s.first_prompt}</div>
+                <div class="text-[10px] text-slate-400 mt-0.5 flex items-center gap-1.5">
+                  <span class="text-sky-400 font-bold">${s.user_messages} پیام شما</span>
+                  <span>•</span>
+                  <span class="text-slate-300">${s.assistant_messages} پاسخ هوش مصنوعی</span>
+                </div>
               </td>
-              <td class="py-2.5 px-3 text-center font-mono text-slate-400">~${tokenStr}</td>
+              <td class="py-2.5 px-3 text-center font-mono text-slate-300 font-semibold">~${tokenStr}</td>
               <td class="py-2.5 px-3 text-center ${sizeColor}">${s.size_human}</td>
-              <td class="py-2.5 px-3 text-center text-slate-400 font-mono text-[11px]">${s.modified_iso}</td>
+              <td class="py-2.5 px-3 text-center text-slate-300 font-mono text-[11px]" dir="ltr">${currentLang === 'fa' ? s.modified_jalali : s.modified_iso}</td>
               <td class="py-2.5 px-3 text-center flex items-center justify-center gap-1.5 flex-wrap">
                 <a href="http://127.0.0.1:8787/?session=${s.id}" target="_blank" class="px-2 py-1 rounded-lg bg-sky-500/10 hover:bg-sky-500/20 text-sky-300 border border-sky-500/30 text-[11px] transition-colors" title="نمایش در پنل وب هرمس">
                   ↗️ ${dict.btnOpenChat}
